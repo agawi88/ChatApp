@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
   },
   topButton: {
    justifyContent: 'center',
-   alignItems: 'center',
+    alignItems: 'center',
+   padding: 10,
   }
 });
 
