@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
+import { Button, StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { GiftedChat } from "react-native-gifted-chat";
 
 
@@ -50,7 +50,10 @@ const Screen2 = ({ route, navigation }) => {
      user={{
        _id: 1
      }}
-   />
+      />
+      {Platform.OS === 'android' ?
+        <KeyboardAvoidingView behavior="height"
+        /> : null}
     </View>
   );
 }

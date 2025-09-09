@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "navigation-project",
-    "slug": "navigation-project",
+    "name": "ChatApp",
+    "slug": "ChatApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.agawi88.navigationproject"
+      "package": "com.agawi88.chatapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
