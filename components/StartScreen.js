@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { onPress, ImageBackground, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { onPress, ImageBackground, StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 // import Icon from '../assets/icon.svg';
 
@@ -8,57 +8,76 @@ const Screen1 = ({ navigation }) => {
   const [chosenColor, setChosenColor] = useState('');
   const image = require('../assets/BackgroundImage.png');
   
-  return (
+return (
   <SafeAreaProvider>
-   <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-    <ImageBackground source={image} resizeMode="cover" style={styles.backgroundImage}>
-      <Text style={styles.title}>ChatApp!</Text>     
-          <View style={styles.container}>
-          {/* <Icon width={20} height={20} style={{ marginRight: 8 }} /> */}
-        <TextInput
-        style={styles.textInput}
-        value={name}
-        onChangeText={setName}
-        placeholder='Your Name'
-        placeholderOpacity="0.5"
-        placeholderTextColor='#757083'
-        selectionColor='#757083'
-            />
-        <Text style={styles.colorButtonsText}>Choose background color:</Text>
-        <View style={styles.colorButtonsContainer}>
-              <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#090C08' },
-          chosenColor === '#090C08' && styles.selectedColor,
-        ]} onPress={() => setChosenColor('#090C08')}>     
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#474056' },
-          chosenColor === '#474056' && styles.selectedColor,
-        ]} onPress={() => setChosenColor('#474056')}>     
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#8A95A5' },
-          chosenColor === '#8A95A5' && styles.selectedColor,
-        ]} onPress={() => setChosenColor('#8A95A5')}>     
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#B9C6AE' },
-          chosenColor === '#B9C6AE' && styles.selectedColor,
-        ]} onPress={() => setChosenColor('#B9C6AE')}>     
-              </TouchableOpacity>
+    <KeyboardAvoidingView
+  style={{ flex: 1 }}
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <SafeAreaView style={styles.wholeView} edges={['top', 'left', 'right']}> 
+      <ImageBackground source={image} resizeMode="cover" style={styles.backgroundImage}>
+        <View style={styles.container1}>
+          <Text style={styles.title}>ChatApp!</Text>
+        </View>
+        <View style={styles.container2}> 
+                {/* <Icon width={20} height={20} style={{ marginRight: 8 }} /> */}
+          <ScrollView
+    contentContainerStyle={{ flexGrow: 1 }}
+    keyboardShouldPersistTaps="handled"
+  >
+          <View style={styles.textPart}>
+          <TextInput
+                  style={styles.textInput}
+                  value={name}
+                  onChangeText={setName}
+                  placeholder='Your Name'
+                  placeholderOpacity="0.5"
+                  placeholderTextColor='#757083'
+                selectionColor='#757083'
+                paddingLeft='15'
+                />
+          </View>
+            <View style={styles.colorPart}>
+              <Text style={styles.colorText}>Choose background color:</Text>
+              <View style={styles.colorButtons}>
+                    <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#090C08' },
+                    chosenColor === '#090C08' && styles.selectedColor,
+                    ]} onPress={() => setChosenColor('#090C08')}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#474056' },
+                    chosenColor === '#474056' && styles.selectedColor,
+                    ]} onPress={() => setChosenColor('#474056')}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#8A95A5' },
+                    chosenColor === '#8A95A5' && styles.selectedColor,
+                    ]} onPress={() => setChosenColor('#8A95A5')}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.backgroundButton, { backgroundColor: '#B9C6AE' },
+                    chosenColor === '#B9C6AE' && styles.selectedColor,
+                    ]} onPress={() => setChosenColor('#B9C6AE')}>
+                    </TouchableOpacity>
               </View>
-            <TouchableOpacity
-              style={styles.navButton}
-              onPress={() => navigation.navigate('Screen2', { name: name, backgroundColor: chosenColor })
-              }>
-          <Text style={styles.navButtonText}>Enter Chat</Text>
-          </TouchableOpacity>
-      </View>
-    </ImageBackground>
-   </SafeAreaView>
+          </View>
+          <View sytle={styles.buttonPart}>
+                <TouchableOpacity
+                  style={styles.navButton}
+                  onPress={() => navigation.navigate('Screen2', { name: name, backgroundColor: chosenColor })
+                  }>
+                  <Text style={styles.navButtonText}>Enter Chat</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView> 
+          </View>
+        </ImageBackground>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   </SafeAreaProvider>
  );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  wholeView: {
     flex: 1, // make bckgrnd fill parent
+    flexDirection: 'column',
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -66,89 +85,115 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover', // or 'contain'
   },
-  title: {
-    flex: 1,
-    fontSize: 45,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    justifyContent: 'center',
-    alignContent: 'center',
-    marginTop: 60,
-    textAlign: 'center',
+  container1: {
+    flex: 60,
+    flexDirection: 'column',
   },
-  container: {
+    title: {
+      flex: 1,
+      fontSize: 45,
+      maxHeight: '44%',
+      height: '50%',
+      fontWeight: '600',
+      color: '#FFFFFF',
+      justifyContent: 'center',
+      alignContent: 'center',
+      marginTop: 60,
+      textAlign: 'center',
+    },
+  container2: {
+    flex: 40,
     flexDirection: 'column',
     width: '88%',
     height: '44%',
+    maxHeight: '50%',
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
+    padding: 15,
     marginLeft: '6%',
-    marginBottom: '8%',
+    marginBottom: '15%',
   },
-  textInput: {
-    flex: 1,
-    justifyContent: 'center',
-    textAlign: 'left',
-    width: '88%',
-    padding: 15,
-    borderWidth: 1,
-    marginTop: 15,
-    marginBottom: 25,  
-    fontSize: 16,
-    fontWeight: '300',
-    color: '#757083',
-  },
-  colorButtonsText: {
-    alignSelf: 'flex-start',
-    fontSize: 16,
-    fontWeight: '300',
-    color: '#757083',
-    opacity: 1,
-    marginTop: 10,
-    paddingLeft: 25,
-    paddingTop: 5,
-    paddingBottom: 5,
-    width: '88%',
-
-  },
-  colorButtonsContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignContent: 'flex-start',
-    width: '88%',
-  },
-  selectedColor: {
-  borderWidth: 3,
-    borderColor: '#6057c0ff',
-    borderPadding: 5,
-},
-  backgroundButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    margin: 10,
-    padding: 5,
-    activeOpacity: 0.5,
-    
-  },
-  navButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#757083',
-    width: '88%',
-    marginTop: 25,
-    marginBottom: 15,
-    padding: 15,
-  },
-  navButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
+    textPart: {
+      flex: 30,
+      width: '88%',
+    },
+      textInput: {
+        textAlign: 'flex-start',
+        width: '113.5%',
+        paddingTop: 22.5,
+        paddingBottom: 22.5,
+        borderWidth: 1,
+        marginTop: 15,
+        marginBottom: 10,  
+        fontSize: 16,
+        fontWeight: '300',
+        color: '#757083',
+      },
+    colorPart: {
+      flex: 45,
+      flexDirection: 'column',
+      width: '88%',
+      alignSelf: 'flex-start',
+      //marginLeft: '4%',
+    },
+      colorText: {
+        flex: 1/3,
+        textAlign: 'left',
+        fontSize: 16,
+        fontWeight: '300',
+        color: '#757083',
+        opacity: 1,
+        marginTop: 10,
+        marginBottom: 4,
+        paddingTop: 10,
+        paddingBottom: 2,
+        width: '100%',
+      },
+      colorButtons: {
+        flex: 2/3,
+        flexDirection: 'row',
+        alignContent: 'flex-start',
+        alignSelf: 'flex-start',
+        width: '100%',
+        marginBottom: 7,
+      },
+      selectedColor: {
+        borderWidth: 3,
+        borderColor: '#6057c0ff',
+        borderPadding: 5,
+    },
+      backgroundButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        marginTop: 5,
+        marginBottom: 5,
+        marginRight: 10,
+        padding: 3,
+        activeOpacity: 0.5,
+        
+      },
+    buttonPart: {
+      flex: 25,
+      width: '88%',
+    },
+      navButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#757083',
+        width: '100%',
+        marginTop: 5,
+        marginBottom: 15,
+        paddingTop: 10,
+        paddingBottom: 10,
+      },
+      navButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#FFFFFF',
+        textAlign: 'center',
+        padding: 10,
+      },
 });
 
 export default Screen1;
