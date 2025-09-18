@@ -10,8 +10,8 @@ const Screen2 = ({ route, navigation }) => {
   
   
   const onSend = (newMessages) => {
-      setMessages(previousMessages =>
-        GiftedChat.append(previousMessages, newMessages))
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, newMessages))
   }
   // Chat code for messages from GiftedChat
 
@@ -19,7 +19,7 @@ const Screen2 = ({ route, navigation }) => {
     navigation.setOptions({
       title: name,
       headerStyle: { backgroundColor: backgroundColor },
-     })
+    })
     setMessages([
       {
         _id: 1,
@@ -31,12 +31,12 @@ const Screen2 = ({ route, navigation }) => {
           avatar: "https://placeimg.com/140/140/any",
         },
       },
-        {
+      {
         _id: 2,
         text: 'This is a system message',
         createdAt: new Date(),
         system: true,
-      },    
+      },
     ]);
   }, []);
 
@@ -58,39 +58,32 @@ const Screen2 = ({ route, navigation }) => {
   return (
     <View style={[styles.container,
     { backgroundColor: backgroundColor || 'white' }]}>
-     <View style={styles.box1}>
+      <View style={styles.box1}>
         <Text>Hello ChatScreen!</Text>
-    </View> 
-    <View style={styles.box2}>
-  {Platform.OS === 'android' ? (
-    <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
-      <View> 
-      <GiftedChat
-        messages={messages}
-        renderBubble={renderBubble}
-        onSend={messages => onSend(messages)}
-        user={{ _id: 1, name }}
-              />
       </View>
-    </KeyboardAvoidingView>
-  ) : (
-      <View> 
+      <View style={styles.box2}>
         <GiftedChat
-      messages={messages}
-      renderBubble={renderBubble}
-      onSend={messages => onSend(messages)}
-      user={{ _id: 1, name }}
-              />
+          messages={messages}
+          renderBubble={renderBubble}
+          onSend={messages => onSend(messages)}
+          user={{ _id: 1, name }}
+        />
       </View>
-      )}
-    </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
  container: {
    flex: 1,
+  },
+    box1: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  box2: {
+    flex: 9, // takes up most of the screen
   },
 /*   box1: {
     flex: 1,
