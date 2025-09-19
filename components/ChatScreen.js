@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat} from "react-native-gifted-chat";
 
 
@@ -8,11 +8,7 @@ const Screen2 = ({ route, navigation }) => {
   const { name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
   
-  
-  const onSend = (newMessages) => {
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, newMessages))
-  }
+
   // Chat code for messages from GiftedChat
 
   useEffect(() => {
@@ -40,6 +36,10 @@ const Screen2 = ({ route, navigation }) => {
     ]);
   }, []);
 
+  const onSend = (newMessages) => {
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, newMessages))
+  }
 
   const renderBubble = (props) => {
     return <Bubble
@@ -56,46 +56,36 @@ const Screen2 = ({ route, navigation }) => {
   };
   
   return (
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
+    >
     <View style={[styles.container,
     { backgroundColor: backgroundColor || 'white' }]}>
-      <View style={styles.box1}>
-        <Text>Hello ChatScreen!</Text>
-      </View>
-      <View style={styles.box2}>
         <GiftedChat
-          messages={messages}
-          renderBubble={renderBubble}
-          onSend={messages => onSend(messages)}
-          user={{ _id: 1, name }}
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{ _id: 1, name }}
+        renderBubble={renderBubble}      
+        textInputProps={{
+        editable: true,
+        multiline: true,
+        placeholder: "Type a message..."
+  }}
         />
+{/*        {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}   
+      {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : undefined}
+    {Platform.OS === 'ios' ? <KeyboardAvoidingView keyboardVerticalOffset='60' /> : null} */}
       </View>
-    </View>
+    </KeyboardAvoidingView>  
   );
 };
 
 const styles = StyleSheet.create({
  container: {
    flex: 1,
-  },
-    box1: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  box2: {
-    flex: 9, // takes up most of the screen
-  },
-/*   box1: {
-    flex: 1,
-  },
-  box2: {
-    flex: 9,
-  }, */
-/*   topButton: {
-   justifyContent: 'center',
-    alignItems: 'center',
-   padding: 10,
-  } */
+  }
 });
 
 export default Screen2;
