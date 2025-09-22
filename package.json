@@ -4,6 +4,10 @@
   "description": "REACT NATIVE PROJECT: MOBILE CHAT APP\r The aim of this project was building a chat app for mobile devices using React Native, Expo GO, Android Symulator, Google Firestore Database, Google Firebase authentication,Firebase Cloud Storage, Gifted Chat Library, etc. The app aims to provide users with a chat interface allowing to share images and the user's location on the map.",
   "main": "index.js",
   "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
