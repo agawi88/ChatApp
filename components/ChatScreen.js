@@ -1,22 +1,41 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat} from "react-native-gifted-chat";
+import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 
+const ChatScreen = ({ db, route, navigation }) => {
 
-const Screen2 = ({ route, navigation }) => {
-
-  const { name, backgroundColor } = route.params;
+  const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
   
-
   // Chat code for messages from GiftedChat
 
   useEffect(() => {
     navigation.setOptions({
       title: name,
       headerStyle: { backgroundColor: backgroundColor },
-    })
-    setMessages([
+    });
+// query all messages ordered by createdAt
+    const q = query(collection(db, "messages"),
+      orderBy("createdAt", "desc"));
+    
+    //code to executed when cmpnnt mounted/updated    
+    const unsubMessages = onSnapshot(q, (documentsSnapshot) => {
+      let newMessages = [];
+        documentsSnapshot.forEach(doc => {
+            const data = doc.data();
+            newMessages.push({
+              _id: doc.id,
+              ...doc.data(),
+              createdAt: new Date(doc.data().createdAt.toMillis()),
+            });
+            });
+            setMessages(newMessages);
+        });
+//   Clean up code
+        return () => unsubMessages();
+        
+/*     setMessages([
       {
         _id: 1,
         text: "Hello developer",
@@ -33,12 +52,11 @@ const Screen2 = ({ route, navigation }) => {
         createdAt: new Date(),
         system: true,
       },
-    ]);
+    ]); */
   }, []);
 
-  const onSend = (newMessages) => {
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, newMessages))
+  const onSend = (newMessages = []) => {
+    addDoc(collection(db, "messages"), newMessages[0])
   }
 
   const renderBubble = (props) => {
@@ -66,7 +84,11 @@ const Screen2 = ({ route, navigation }) => {
         <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
-        user={{ _id: 1, name }}
+          user={{
+            _id: userID,
+            name: name,
+              avatar: "https://placeimg.com/140/140/any",
+          }}
         renderBubble={renderBubble}      
         textInputProps={{
         editable: true,
@@ -88,4 +110,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Screen2;
+export default ChatScreen;

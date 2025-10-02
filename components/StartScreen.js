@@ -1,12 +1,34 @@
 import { useState } from 'react';
-import { onPress, ImageBackground, StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
+import {Alert, ImageBackground, StyleSheet,
+  ScrollView, View, Text, TextInput,
+  TouchableOpacity, Platform, KeyboardAvoidingView
+} from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 // import Icon from '../assets/icon.svg';
+import { signInAnonymously } from "firebase/auth";
 
-const Screen1 = ({ navigation }) => {
+
+const StartScreen = ({ navigation, auth }) => {
   const [name, setName] = useState('');
   const [chosenColor, setChosenColor] = useState('');
   const image = require('../assets/BackgroundImage.png');
+
+    const signInUser = () => {
+        signInAnonymously(auth)
+          .then(result => {
+            if (result.user) {
+              navigation.navigate("ChatScreen", {
+                userID: result.user.uid,
+                name: name,
+                backgroundColor: chosenColor
+              });
+            }
+                Alert.alert("Signed in successfully!");
+            })
+            .catch((error) => {
+                Alert.alert("Unable to sign in, try later again.");
+        })
+}
   
 return (
   <SafeAreaProvider>
@@ -60,8 +82,7 @@ return (
           <View sytle={styles.buttonPart}>
                 <TouchableOpacity
                   style={styles.navButton}
-                  onPress={() => navigation.navigate('Screen2', { name: name, backgroundColor: chosenColor })
-                  }>
+                  onPress={signInUser}>
                   <Text style={styles.navButtonText}>Enter Chat</Text>
             </TouchableOpacity>
           </View>
@@ -196,4 +217,4 @@ const styles = StyleSheet.create({
       },
 });
 
-export default Screen1;
+export default StartScreen;
