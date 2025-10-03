@@ -6,9 +6,10 @@ import {Alert, ImageBackground, StyleSheet,
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 // import Icon from '../assets/icon.svg';
 import { signInAnonymously } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
+const StartScreen = ({ navigation }) => {
 
-const StartScreen = ({ navigation, auth }) => {
   const [name, setName] = useState('');
   const [chosenColor, setChosenColor] = useState('');
   const image = require('../assets/BackgroundImage.png');
@@ -22,8 +23,8 @@ const StartScreen = ({ navigation, auth }) => {
                 name: name,
                 backgroundColor: chosenColor
               });
+              Alert.alert("Signed in successfully!");
             }
-                Alert.alert("Signed in successfully!");
             })
             .catch((error) => {
                 Alert.alert("Unable to sign in, try later again.");

@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat} from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
-const ChatScreen = ({ db, route, navigation }) => {
+const ChatScreen = ({ route, navigation }) => {
 
   const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
@@ -13,17 +14,17 @@ const ChatScreen = ({ db, route, navigation }) => {
   useEffect(() => {
     navigation.setOptions({
       title: name,
-      headerStyle: { backgroundColor: backgroundColor },
+      headerStyle: { backgroundColor },
     });
+
 // query all messages ordered by createdAt
     const q = query(collection(db, "messages"),
       orderBy("createdAt", "desc"));
     
     //code to executed when cmpnnt mounted/updated    
-    const unsubMessages = onSnapshot(q, (documentsSnapshot) => {
+    const unsubMessages = onSnapshot(q, (doc) => {
       let newMessages = [];
-        documentsSnapshot.forEach(doc => {
-            const data = doc.data();
+        doc.forEach(doc => {
             newMessages.push({
               _id: doc.id,
               ...doc.data(),
@@ -34,26 +35,7 @@ const ChatScreen = ({ db, route, navigation }) => {
         });
 //   Clean up code
         return () => unsubMessages();
-        
-/*     setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-      {
-        _id: 2,
-        text: 'This is a system message',
-        createdAt: new Date(),
-        system: true,
-      },
-    ]); */
-  }, []);
+  }, [db, navigation, name, backgroundColor]); //safer option so if changes occur they will re-run
 
   const onSend = (newMessages = []) => {
     addDoc(collection(db, "messages"), newMessages[0])
@@ -78,7 +60,7 @@ const ChatScreen = ({ db, route, navigation }) => {
     style={{ flex: 1 }}
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
-    >
+      >
     <View style={[styles.container,
     { backgroundColor: backgroundColor || 'white' }]}>
         <GiftedChat
@@ -87,20 +69,21 @@ const ChatScreen = ({ db, route, navigation }) => {
           user={{
             _id: userID,
             name: name,
-              avatar: "https://placeimg.com/140/140/any",
+            avatar: "https://placeimg.com/140/140/any",
           }}
         renderBubble={renderBubble}      
         textInputProps={{
         editable: true,
         multiline: true,
         placeholder: "Type a message..."
-  }}
+          }}
+        keyboardShouldPersistTaps="handled"
         />
-{/*        {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}   
+{/*     {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}   
       {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : undefined}
     {Platform.OS === 'ios' ? <KeyboardAvoidingView keyboardVerticalOffset='60' /> : null} */}
-      </View>
-    </KeyboardAvoidingView>  
+          </View>
+      </KeyboardAvoidingView>
   );
 };
 
