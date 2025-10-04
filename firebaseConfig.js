@@ -1,13 +1,15 @@
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import {
+  initializeAuth,
+  getReactNativePersistence,
+  browserLocalPersistence
+} from 'firebase/auth';
 import { initializeApp,  } from 'firebase/app';
 import { getFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Platform } from "react-native";
 
 // Optionally import the services that you want to use
-// import {...} from 'firebase/auth';
 // import {...} from 'firebase/database';
-// import {...} from 'firebase/firestore';
 // import {...} from 'firebase/functions';
 // import {...} from 'firebase/storage';
 
@@ -26,8 +28,19 @@ const app = initializeApp(firebaseConfig);
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
 const db = getFirestore(app);
 
-const auth = initializeAuth(app, {
+// code for supporting all three platforms: iOS, Android and Web. https://github.com/expo/fyi/blob/main/firebase-js-auth-setup.md
+let auth;
+
+if (Platform.OS === "web") {
+  auth = initializeAuth(app, {
+    persistance: browserLocalPersistence,
+  });
+}
+else {
+  auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)  
 }); 
+}
+
 
 export { app, db, auth };
