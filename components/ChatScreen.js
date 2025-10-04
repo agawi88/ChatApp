@@ -74,7 +74,7 @@ const ChatScreen = ({ route, navigation }) => {
   return (
     <KeyboardAvoidingView // always needs flex: 1
     style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // padding is for iOS and height is for android. Since I'm working on both, depending on which app works atm, I need both in my code
+    behavior={Platform.OS === 'android' ? 'padding' : 'height'} // padding is for iOS and height is for android. Since I'm working on both, depending on which app works atm, I need both in my code
     keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0} // solution for iOS Expo app, which tends to have problems with the text iput field of the
       >
     <View style={[styles.container,
