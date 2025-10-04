@@ -4,12 +4,15 @@ import { Bubble, GiftedChat} from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
+
 const ChatScreen = ({ route, navigation }) => {
+
 
   const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
-  
+ 
   // Chat code for messages from GiftedChat
+
 
   useEffect(() => {
     navigation.setOptions({
@@ -17,10 +20,11 @@ const ChatScreen = ({ route, navigation }) => {
       headerStyle: { backgroundColor },
     });
 
+
 // query all messages ordered by createdAt
     const q = query(collection(db, "messages"),
       orderBy("createdAt", "desc"));
-    
+   
     //code to executed when cmpnnt mounted/updated    
     const unsubMessages = onSnapshot(q, (doc) => {
       let newMessages = [];
@@ -28,9 +32,9 @@ const ChatScreen = ({ route, navigation }) => {
             newMessages.push({
               _id: doc.id,
               ...doc.data(),
-              createdAt: new Date(doc.data().createdAt.toMillis()), // one way to change convert 
-              // the TimeStamp stored at the createdAt property of each message to a Date object 
-              // that Gifted Chat understands. Other way suggested by chatGPT: 
+              createdAt: new Date(doc.data().createdAt.toMillis()), // one way to change convert
+              // the TimeStamp stored at the createdAt property of each message to a Date object
+              // that Gifted Chat understands. Other way suggested by chatGPT:
               // const data = doc.data();
 /*         return {
           _id: doc.id,
@@ -46,6 +50,7 @@ const ChatScreen = ({ route, navigation }) => {
 //   Clean up code
         return () => unsubMessages();
   }, [db, navigation, name, backgroundColor]); //safer option so if changes occur they will re-run
+
 
   // using  addDoc() Firestore function to save the passed message to the function in the database
   const onSend = (newMessages = []) => {
@@ -65,12 +70,12 @@ const ChatScreen = ({ route, navigation }) => {
       }}
     />
   };
-  
+ 
   return (
     <KeyboardAvoidingView // always needs flex: 1
     style={{ flex: 1 }}
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // padding is for iOS and height is for android. Since I'm working on both, depending on which app works atm, I need both in my code
-    keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0} // solution for iOS Expo app, which tends to have problems with the text iput field of the 
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0} // solution for iOS Expo app, which tends to have problems with the text iput field of the
       >
     <View style={[styles.container,
     { backgroundColor: backgroundColor || 'white' }]}>
@@ -91,7 +96,7 @@ const ChatScreen = ({ route, navigation }) => {
         keyboardShouldPersistTaps="handled"
         />
 {/*    alternative option for KeyboardAvoidingView&Platform, which didn't seem to work properly with my Expo Go on iOS
-     {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}   
+     {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}  
       {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : undefined}
     {Platform.OS === 'ios' ? <KeyboardAvoidingView keyboardVerticalOffset='60' /> : null} */}
           </View>
@@ -99,10 +104,12 @@ const ChatScreen = ({ route, navigation }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
  container: {
    flex: 1,
   }
 });
+
 
 export default ChatScreen;

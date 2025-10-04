@@ -2,9 +2,6 @@ import { StyleSheet } from 'react-native';
 import StartScreen from './components/StartScreen';
 import ChatScreen from './components/ChatScreen';
 
-// import initialized Firebase instances
-import { db, auth } from './firebaseConfig';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
