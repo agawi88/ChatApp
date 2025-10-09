@@ -87,43 +87,31 @@ const ChatScreen = ({ route, navigation }) => {
           name: name,
           avatar: 'https://placeimg.com/140/140/any',
         }}
-        renderBubble={renderBubble}
+       renderBubble={renderBubble}
+        alwaysShowSend={true}
+        scrollToBottom  ={true}
+        keyboardShouldPersistTaps="handled"  
         textInputProps={{
           editable: true,
-          multiline: true,
           placeholder: 'Type a message...',
         }}
-        keyboardShouldPersistTaps="handled"
       />
     </View>
   );
 
-  // Full separation between iOS and Android layout handling
-  if (Platform.OS === 'ios') {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor || "white" }}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} // 👈 Adjusted offset for iOS input bar overlap, in steps 60 - 80 - 100
-        >
-          <ChatContent />
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-  } else {
-
-    // Android layout
-    return (
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor || "white" }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior="height"
-        keyboardVerticalOffset={0}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
-        <ChatContent />
+        <View style={{ flex: 1 }}>
+          <ChatContent/>
+        </View>
       </KeyboardAvoidingView>
-    );
-  }
+    </SafeAreaView>
+  );
 };
 
 
