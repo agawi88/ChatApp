@@ -4,6 +4,7 @@ import ChatScreen from './components/ChatScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider } from "react-native-safe-area-context"; // 👈 import this
 
 //import { initializeApp } from "firebase/app";
 //import { getFirestore } from "firebase/firestore";
@@ -14,22 +15,22 @@ const Stack = createNativeStackNavigator();
 const App = () => {
 
   return (
+<SafeAreaProvider>   
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="StartScreen">
       <Stack.Screen
         name="StartScreen"
         component={StartScreen}
-        //children={props => <StartScreen auth={auth} {...props} />}
 
         />
       <Stack.Screen
         name="ChatScreen"
         component={ChatScreen}
-        //children={props => <ChatScreen db={db} {...props} />}
         />
       </Stack.Navigator>
-    </NavigationContainer>
+      </NavigationContainer>
+</SafeAreaProvider> 
   );
 }
 

@@ -3,6 +3,7 @@ import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat} from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const ChatScreen = ({ route, navigation }) => {
@@ -25,7 +26,7 @@ const ChatScreen = ({ route, navigation }) => {
     const q = query(collection(db, "messages"),
       orderBy("createdAt", "desc"));
    
-    //code to executed when cmpnnt mounted/updated    
+    //code to executed when component mounted/updated    
     const unsubMessages = onSnapshot(q, (doc) => {
       let newMessages = [];
         doc.forEach(doc => {
@@ -71,41 +72,58 @@ const ChatScreen = ({ route, navigation }) => {
     />
   };
  
-// Conditional config for KeyboardAvoidingView
-  const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
-
-  return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={keyboardBehavior}
-      keyboardVerticalOffset={keyboardVerticalOffset}
+ const ChatContent = () => (
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: backgroundColor || 'white' },
+      ]}
     >
-      <View
-        style={[
-          styles.container,
-          { backgroundColor: backgroundColor || "white" },
-        ]}
-      >
-        <GiftedChat
-          messages={messages}
-          onSend={messages => onSend(messages)}
-          user={{
-            _id: userID,
-            name: name,
-            avatar: "https://placeimg.com/140/140/any",
-          }}
-          renderBubble={renderBubble}
-          textInputProps={{
-            editable: true,
-            multiline: true,
-            placeholder: "Type a message...",
-          }}
-          keyboardShouldPersistTaps="handled"
-        />
-      </View>
-    </KeyboardAvoidingView>
+      <GiftedChat
+        messages={messages}
+        onSend={(messages) => onSend(messages)}
+        user={{
+          _id: userID,
+          name: name,
+          avatar: 'https://placeimg.com/140/140/any',
+        }}
+        renderBubble={renderBubble}
+        textInputProps={{
+          editable: true,
+          multiline: true,
+          placeholder: 'Type a message...',
+        }}
+        keyboardShouldPersistTaps="handled"
+      />
+    </View>
   );
+
+  // Full separation between iOS and Android layout handling
+  if (Platform.OS === 'ios') {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor || "white" }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} // 👈 Adjusted offset for iOS input bar overlap, in steps 60 - 80 - 100
+        >
+          <ChatContent />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  } else {
+
+    // Android layout
+    return (
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior="height"
+        keyboardVerticalOffset={0}
+      >
+        <ChatContent />
+      </KeyboardAvoidingView>
+    );
+  }
 };
 
 
