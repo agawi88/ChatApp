@@ -71,36 +71,40 @@ const ChatScreen = ({ route, navigation }) => {
     />
   };
  
+// Conditional config for KeyboardAvoidingView
+  const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
+  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
+
   return (
-    <KeyboardAvoidingView // always needs flex: 1
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'android' ? 'padding' : 'height'} // padding is for iOS and height is for android. Since I'm working on both, depending on which app works atm, I need both in my code
-    keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0} // solution for iOS Expo app, which tends to have problems with the text iput field of the
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={keyboardBehavior}
+      keyboardVerticalOffset={keyboardVerticalOffset}
+    >
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: backgroundColor || "white" },
+        ]}
       >
-    <View style={[styles.container,
-    { backgroundColor: backgroundColor || 'white' }]}>
         <GiftedChat
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          user={{
             _id: userID,
             name: name,
             avatar: "https://placeimg.com/140/140/any",
           }}
-        renderBubble={renderBubble}      
-        textInputProps={{
-        editable: true,
-        multiline: true,
-        placeholder: "Type a message..."
+          renderBubble={renderBubble}
+          textInputProps={{
+            editable: true,
+            multiline: true,
+            placeholder: "Type a message...",
           }}
-        keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="handled"
         />
-{/*    alternative option for KeyboardAvoidingView&Platform, which didn't seem to work properly with my Expo Go on iOS
-     {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}  
-      {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : undefined}
-    {Platform.OS === 'ios' ? <KeyboardAvoidingView keyboardVerticalOffset='60' /> : null} */}
-          </View>
-      </KeyboardAvoidingView>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
