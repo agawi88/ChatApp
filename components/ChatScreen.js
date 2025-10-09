@@ -72,45 +72,40 @@ const ChatScreen = ({ route, navigation }) => {
     />
   };
  
- const ChatContent = () => (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: backgroundColor || 'white' },
-      ]}
-    >
-      <GiftedChat
-        messages={messages}
-        onSend={(messages) => onSend(messages)}
-        user={{
-          _id: userID,
-          name: name,
-          avatar: 'https://placeimg.com/140/140/any',
-        }}
-       renderBubble={renderBubble}
-        alwaysShowSend={true}
-        scrollToBottom  ={true}
-        keyboardShouldPersistTaps="handled"  
-        textInputProps={{
-          editable: true,
-          placeholder: 'Type a message...',
-        }}
-      />
-    </View>
-  );
+  // Conditional config for KeyboardAvoidingView
+  const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
+  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor || "white" }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={keyboardBehavior}
+      keyboardVerticalOffset={keyboardVerticalOffset}
+    >
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: backgroundColor || "white" },
+        ]}
       >
-        <View style={{ flex: 1 }}>
-          <ChatContent/>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <GiftedChat
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          user={{
+            _id: userID,
+            name: name,
+            avatar: "https://placeimg.com/140/140/any",
+          }}
+          renderBubble={renderBubble}
+          textInputProps={{
+            editable: true,
+            multiline: true,
+            placeholder: "Type a message...",
+          }}
+          keyboardShouldPersistTaps="handled"
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
