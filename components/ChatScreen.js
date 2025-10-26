@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, FlatList, StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat} from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { SafeAreaView } from 'react-native-safe-area-context';
+// import { db } from "../firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-const ChatScreen = ({ route, navigation }) => {
+const ChatScreen = ({ db, isConnected, route, navigation }) => {
 
 
   const { userID, name, backgroundColor } = route.params;
@@ -14,13 +13,19 @@ const ChatScreen = ({ route, navigation }) => {
  
   // Chat code for messages from GiftedChat
 
+  let unsubMessages;
 
   useEffect(() => {
+
     navigation.setOptions({
       title: name,
-      headerStyle: { backgroundColor },
+      headerStyle: { backgroundColor }
     });
 
+    if (isConnected === true) {
+// unregister current onSnapshot() listener to avoid registering multiple listeners when useEffect code is re-executed.
+    if (unsubMessages) unsubMessages();
+      unsubMessages = null;      
 
 // query all messages ordered by createdAt
     const q = query(collection(db, "messages"),
@@ -37,21 +42,28 @@ const ChatScreen = ({ route, navigation }) => {
               // the TimeStamp stored at the createdAt property of each message to a Date object
               // that Gifted Chat understands. Other way suggested by chatGPT:
               // const data = doc.data();
-/*         return {
-          _id: doc.id,
-          text: data.text,
-          createdAt: data.createdAt?.toDate() || new Date(),
-          user: data.user,
-        };
- */
-            });
-            });
+            })
+          });
+            cacheMessages(newMessages);
             setMessages(newMessages);
         });
+      } else loadCachedMessages();
 //   Clean up code
         return () => unsubMessages();
-  }, [db, navigation, name, backgroundColor]); //safer option so if changes occur they will re-run
+  }, [db, isConnected, name, backgroundColor]); //safer option so if changes occur they will re-run
 
+const loadCachedMessages = async () => {
+    const cachedMessages = await AsyncStorage.getItem("messages") || [];
+    setLists(JSON.parse(cachedMessages));
+  }    
+    
+const cacheMessages = async (messagesToCache) => {
+    try {
+          await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
+        } catch (error) {
+            console.log(error.message);
+        }
+}
 
   // using  addDoc() Firestore function to save the passed message to the function in the database
   const onSend = (newMessages = []) => {
