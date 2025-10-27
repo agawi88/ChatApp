@@ -2,7 +2,7 @@ import { Alert, LogBox, StyleSheet } from 'react-native';
 // import the screens
 import StartScreen from './components/StartScreen';
 import ChatScreen from './components/ChatScreen';
-import { app, db } from "./firebaseConfig";
+import { db } from "./firebaseConfig";
 
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context"; // 👈 impor
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { enableNetwork, disableNetwork } from "firebase/firestore";
+
 // Ignore deprecation warnings
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 // Create the navigator

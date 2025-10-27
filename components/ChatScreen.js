@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat} from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
-// import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ChatScreen = ({ db, isConnected, route, navigation }) => {
@@ -10,7 +9,7 @@ const ChatScreen = ({ db, isConnected, route, navigation }) => {
 
   const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
- 
+
   // Chat code for messages from GiftedChat
 
   let unsubMessages;
@@ -32,7 +31,7 @@ const ChatScreen = ({ db, isConnected, route, navigation }) => {
       orderBy("createdAt", "desc"));
    
     //code to executed when component mounted/updated    
-    const unsubMessages = onSnapshot(q, (doc) => {
+    unsubMessages = onSnapshot(q, (doc) => {
       let newMessages = [];
         doc.forEach(doc => {
             newMessages.push({
@@ -54,7 +53,7 @@ const ChatScreen = ({ db, isConnected, route, navigation }) => {
 
 const loadCachedMessages = async () => {
     const cachedMessages = await AsyncStorage.getItem("messages") || [];
-    setLists(JSON.parse(cachedMessages));
+    setMessages(JSON.parse(cachedMessages));
   }    
     
 const cacheMessages = async (messagesToCache) => {
@@ -106,7 +105,7 @@ const cacheMessages = async (messagesToCache) => {
           user={{
             _id: userID,
             name: name,
-            avatar: "https://placeimg.com/140/140/any",
+            avatar: "https://picsum.photos/140",
           }}
           renderBubble={renderBubble}
           textInputProps={{

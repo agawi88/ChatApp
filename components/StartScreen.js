@@ -17,14 +17,12 @@ const StartScreen = ({ navigation }) => {
     const signInUser = () => {
         signInAnonymously(auth)
           .then(result => {
-            if (result.user) {
               navigation.navigate("ChatScreen", {
                 userID: result.user.uid,
                 name: name,
                 backgroundColor: chosenColor
               });
               Alert.alert("Signed in successfully!");
-            }
             })
             .catch((error) => {
                 Alert.alert("Unable to sign in, try later again.");
