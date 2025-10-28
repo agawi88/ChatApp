@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Alert, FlatList, StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
-import { Bubble, GiftedChat} from "react-native-gifted-chat";
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ChatScreen = ({ db, isConnected, route, navigation }) => {
-
 
   const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
@@ -30,10 +29,10 @@ const ChatScreen = ({ db, isConnected, route, navigation }) => {
     const q = query(collection(db, "messages"),
       orderBy("createdAt", "desc"));
    
-    //code to executed when component mounted/updated    
-    unsubMessages = onSnapshot(q, (doc) => {
+//code to executed when component mounted/updated    
+    unsubMessages = onSnapshot(q, (docs) => {
       let newMessages = [];
-        doc.forEach(doc => {
+        docs.forEach(doc => {
             newMessages.push({
               _id: doc.id,
               ...doc.data(),
@@ -48,12 +47,14 @@ const ChatScreen = ({ db, isConnected, route, navigation }) => {
         });
       } else loadCachedMessages();
 //   Clean up code
-        return () => unsubMessages();
-  }, [db, isConnected, name, backgroundColor]); //safer option so if changes occur they will re-run
+        return () => {
+          if (unsubMessages) unsubMessages();
+        }
+  }, [ isConnected ]); //safer option so if changes occur they will re-run
 
 const loadCachedMessages = async () => {
-    const cachedMessages = await AsyncStorage.getItem("messages") || [];
-    setMessages(JSON.parse(cachedMessages));
+  const cachedMessages = await AsyncStorage.getItem("messages") || [];
+  setMessages(JSON.parse(cachedMessages));
   }    
     
 const cacheMessages = async (messagesToCache) => {
@@ -65,20 +66,30 @@ const cacheMessages = async (messagesToCache) => {
 }
 
   // using  addDoc() Firestore function to save the passed message to the function in the database
-  const onSend = (newMessages = []) => {
-    addDoc(collection(db, "messages"), newMessages[0])
+  const onSend = async (newMessages) => {
+    console.log('onSend in Chat.js called with:', newMessages);
+    try {
+      await addDoc(collection(db, "messages"), newMessages[0]);
+    console.log('Messages added to Firestore successfully!');
+    } catch (error) {
+      console.log('Error adding messages to Firestore:', error)
+    }
   }
-// a method of adjusting colors of gifted chat's message bubbles
+
+  // method for conditionally rendering the input toolbar based on isConnected status
+  const renderInputToolbar = (props) => {
+    if (isConnected === true)
+    return <InputToolbar {...props} />;
+    else return null; 
+}
+
+// method for adjusting colors of gifted chat's message bubbles
   const renderBubble = (props) => {
     return <Bubble
       {...props}
       wrapperStyle={{
-        right: {
-          backgroundColor: "#000"
-        },
-        left: {
-          backgroundColor: "#FFF"
-        }
+        right: { backgroundColor: "#000"},
+        left: { backgroundColor: "#FFF" }
       }}
     />
   };
@@ -102,12 +113,12 @@ const cacheMessages = async (messagesToCache) => {
         <GiftedChat
           messages={messages}
           onSend={messages => onSend(messages)}
+          renderBubble={renderBubble}
+          renderInputToolbar={renderInputToolbar}
           user={{
             _id: userID,
             name: name,
-            avatar: "https://picsum.photos/140",
           }}
-          renderBubble={renderBubble}
           textInputProps={{
             editable: true,
             multiline: true,

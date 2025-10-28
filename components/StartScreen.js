@@ -15,8 +15,8 @@ const StartScreen = ({ navigation }) => {
   const image = require('../assets/BackgroundImage.png');
 
     const signInUser = () => {
-        signInAnonymously(auth)
-          .then(result => {
+        signInAnonymously(auth).then(result => {
+              console.log("StartScreen.js - result.user.uid:", result.user.uid);
               navigation.navigate("ChatScreen", {
                 userID: result.user.uid,
                 name: name,

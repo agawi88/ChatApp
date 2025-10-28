@@ -31,8 +31,9 @@ const connectionStatus = useNetInfo();
     if (connectionStatus.isConnected === false) {
       Alert.alert("Connection lost!");
       disableNetwork(db);
-    } else if (connectionStatus.isConnected === true)
-    { enableNetwork(db); }
+    } else if (connectionStatus.isConnected === true) { 
+      Alert.alert("Connection is on!");
+      enableNetwork(db); }
   }, [connectionStatus.isConnected]);
 
 
