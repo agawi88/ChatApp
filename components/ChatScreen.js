@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
+//import MapView from 'react-native-maps';
 
+let MapView; // declaring variable but don't importing it yet
+if (Platform.OS !== 'web') {
+  // only require the native map when not on web
+  MapView = require('react-native-maps').default;
+};
 
 const ChatScreen = ({ db, isConnected, route, navigation }) => {
 
@@ -97,8 +103,27 @@ const cacheMessages = async (messagesToCache) => {
   };
 // method for rendering custom actions (e.g., sending images, location)
   const renderCustomActions = (props) => {
-    return <CustomActions {...props} />;
+    return <CustomActions onSend={onSend} {...props} />;
   };
+
+// method for rendering custom view (e.g., map for location messages)
+const renderCustomView = (props) => {
+  const { currentMessage } = props;
+  if (currentMessage.location) {
+    return (
+      <MapView
+      style={{ width: 150, height: 100, borderRadius: 13, margin: 3}}
+      region={{
+        latitude: currentMessage.location.latitude,
+        longitude: currentMessage.location.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+      }}
+      />
+    );
+  }
+  return null;
+};
  
   // Conditional config for KeyboardAvoidingView
   const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
@@ -122,6 +147,7 @@ const cacheMessages = async (messagesToCache) => {
           renderBubble={renderBubble}
           renderInputToolbar={renderInputToolbar}
           renderActions={renderCustomActions}
+          renderCustomView={renderCustomView}
           user={{
             _id: userID,
             name: name,

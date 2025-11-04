@@ -11,7 +11,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context"; // 👈 impor
 
 // code for detecting whether a user is online (should be kept in main/root comp.)
 import { useNetInfo } from "@react-native-community/netinfo";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { enableNetwork, disableNetwork } from "firebase/firestore";
 
 // Ignore deprecation warnings
