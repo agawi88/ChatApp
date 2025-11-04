@@ -3,6 +3,8 @@ import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomActions from './CustomActions';
+
 
 const ChatScreen = ({ db, isConnected, route, navigation }) => {
 
@@ -93,6 +95,10 @@ const cacheMessages = async (messagesToCache) => {
       }}
     />
   };
+// method for rendering custom actions (e.g., sending images, location)
+  const renderCustomActions = (props) => {
+    return <CustomActions {...props} />;
+  };
  
   // Conditional config for KeyboardAvoidingView
   const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
@@ -115,6 +121,7 @@ const cacheMessages = async (messagesToCache) => {
           onSend={messages => onSend(messages)}
           renderBubble={renderBubble}
           renderInputToolbar={renderInputToolbar}
+          renderActions={renderCustomActions}
           user={{
             _id: userID,
             name: name,
