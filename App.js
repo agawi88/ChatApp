@@ -2,7 +2,7 @@ import { Alert, LogBox, StyleSheet } from 'react-native';
 // import the screens
 import StartScreen from './components/StartScreen';
 import ChatScreen from './components/ChatScreen';
-import { db } from "./firebaseConfig";
+import { db, storage } from "./firebaseConfig";
 
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -52,6 +52,7 @@ const connectionStatus = useNetInfo();
             <ChatScreen
               isConnected={connectionStatus.isConnected}
               db={db}
+              storage={storage}
               {...props} />)}         
       </Stack.Screen>
     </Stack.Navigator>

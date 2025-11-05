@@ -7,6 +7,7 @@ import { initializeApp,  } from 'firebase/app';
 import { getFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from "react-native";
+import { getStorage } from "firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -23,6 +24,9 @@ const app = initializeApp(firebaseConfig);
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
 const db = getFirestore(app);
 
+// Initialize Firebase Storage
+const storage = getStorage(app);
+
 // code for supporting all three platforms: iOS, Android and Web. https://github.com/expo/fyi/blob/main/firebase-js-auth-setup.md
 let auth;
 
@@ -38,4 +42,4 @@ else {
 }
 
 
-export { app, db, auth };
+export { app, db, auth, storage };

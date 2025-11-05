@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
-//import MapView from 'react-native-maps';
 
-let MapView; // declaring variable but don't importing it yet
-if (Platform.OS !== 'web') {
-  // only require the native map when not on web
-  MapView = require('react-native-maps').default;
-};
 
-const ChatScreen = ({ db, isConnected, route, navigation }) => {
+const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
   const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
@@ -103,24 +97,35 @@ const cacheMessages = async (messagesToCache) => {
   };
 // method for rendering custom actions (e.g., sending images, location)
   const renderCustomActions = (props) => {
-    return <CustomActions onSend={onSend} {...props} />;
+    return <CustomActions storage={storage} {...props} />;
   };
 
 // method for rendering custom view (e.g., map for location messages)
 const renderCustomView = (props) => {
   const { currentMessage } = props;
   if (currentMessage.location) {
+    if (Platform.OS === 'web') {
+      // 🟢 Web fallback text
+      return (
+        <Text>
+          Location: {currentMessage.location.latitude}, {currentMessage.location.longitude}
+        </Text>
+      );
+    } else {
+      // 🟢 Dynamically import MapView only for native
+      const MapView = require('react-native-maps').default;
     return (
       <MapView
       style={{ width: 150, height: 100, borderRadius: 13, margin: 3}}
       region={{
         latitude: currentMessage.location.latitude,
         longitude: currentMessage.location.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
       }}
       />
     );
+  }
   }
   return null;
 };
