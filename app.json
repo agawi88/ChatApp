@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.agawi88.chatapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,6 +28,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
+      "firebaseApiKey": "${REACT_APP_FIREBASE_API_KEY}",
       "eas": {
         "projectId": "8926afe3-ce1b-4b9f-8bcb-9d5fdc84f668"
       }
