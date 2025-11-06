@@ -68,7 +68,10 @@ const cacheMessages = async (messagesToCache) => {
 }
 
   // using  addDoc() Firestore function to save the passed message to the function in the database
-  const onSend = async (newMessages) => {
+    const onSend = (newMessages) => {
+    addDoc(collection(db, "messages"), newMessages[0])
+  }
+/*   const onSend = async (newMessages) => {
     console.log('onSend in Chat.js called with:', newMessages);
     try {
       await addDoc(collection(db, "messages"), newMessages[0]);
@@ -76,7 +79,7 @@ const cacheMessages = async (messagesToCache) => {
     } catch (error) {
       console.log('Error adding messages to Firestore:', error)
     }
-  }
+  } */
 
   // method for conditionally rendering the input toolbar based on isConnected status
   const renderInputToolbar = (props) => {
@@ -97,7 +100,7 @@ const cacheMessages = async (messagesToCache) => {
   };
 // method for rendering custom actions (e.g., sending images, location)
   const renderCustomActions = (props) => {
-    return <CustomActions storage={storage} {...props} />;
+    return <CustomActions userID={userID} storage={storage} {...props} />;
   };
 
 // method for rendering custom view (e.g., map for location messages)
