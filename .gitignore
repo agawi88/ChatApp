@@ -31,7 +31,6 @@ yarn-error.*
 *.pem
 
 # local env files
-.env*.local
 .env*
 
 # typescript
@@ -40,3 +39,5 @@ yarn-error.*
 # firebase
 firebaseConfig.js
 
+# app config
+app.config.js
