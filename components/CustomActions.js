@@ -7,7 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 
-const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID }) => {
+const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextStyle, userID }) => {
 
     const actionSheet = useActionSheet();
 
@@ -38,7 +38,7 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
                 console.log('User wants to take a photo');
                 return;
               case 2:
-                getLocation();
+                await getLocation();
                 console.log('User wants to send their location');
                 default:
             }
@@ -62,9 +62,12 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     if (permissions?.granted) {
       let result = await ImagePicker.launchImageLibraryAsync();
       if (!result.canceled) {
+        await setImage(result.assets[0].uri);
+      } else setImage(null);
+      if (result.assets[0].uri) {
         await uploadAndSendImage(result.assets[0].uri);
-      }
-        else Alert.alert("Permissions haven't been granted.");
+      } 
+      //  else Alert.alert("Permissions haven't been granted.");
     }
   }
 
@@ -74,6 +77,11 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     if (permissions?.granted) {
       let result = await ImagePicker.launchCameraAsync();
       if (!result.canceled) {
+        let requestMediaLibraryPermissions = await MediaLibrary.requestPermissionsAsync();
+      if (requestMediaLibraryPermissions?.granted)
+          await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
+            setImage(result.assets[0]); } else setImage(null);
+      if (result.assets[0].uri) {
         await uploadAndSendImage(result.assets[0].uri);
       }
       else Alert.alert("Permissions haven't been granted.");
@@ -84,7 +92,7 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     let permissions = await ExpoLocation.requestForegroundPermissionsAsync();
     if (permissions?.granted) {
       const location = await ExpoLocation.getCurrentPositionAsync({});
-      //setLocation(location);
+      setLocation(location);
       if (location) {
         onSend({
             location: {
