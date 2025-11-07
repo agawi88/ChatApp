@@ -4,7 +4,7 @@ import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
-
+import MapView from 'react-native-maps';
 
 const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
@@ -56,7 +56,7 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
 const loadCachedMessages = async () => {
   const cachedMessages = await AsyncStorage.getItem("messages") || [];
-  setMessages(JSON.parse(cachedMessages));
+  setMessages(cachedMessages ? JSON.parse(cachedMessages) : [] );
   }    
     
 const cacheMessages = async (messagesToCache) => {
@@ -108,30 +108,27 @@ const renderCustomView = (props) => {
   const { currentMessage } = props;
   if (currentMessage.location) {
     if (Platform.OS === 'web') {
-      // 🟢 Web fallback text
       return (
         <Text>
           Location: {currentMessage.location.latitude}, {currentMessage.location.longitude}
         </Text>
       );
     } else {
-      // 🟢 Dynamically import MapView only for native
-      const MapView = require('react-native-maps').default;
     return (
       <MapView
-      style={{ width: 150, height: 100, borderRadius: 13, margin: 3}}
-      region={{
-        latitude: currentMessage.location.latitude,
-        longitude: currentMessage.location.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }}
+        style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+        region={{
+          latitude: currentMessage.location.latitude,
+          longitude: currentMessage.location.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
       />
     );
   }
-  }
+}
   return null;
-};
+}
  
   // Conditional config for KeyboardAvoidingView
   const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";

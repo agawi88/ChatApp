@@ -61,7 +61,9 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchImageLibraryAsync();
-      if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
+      if (!result.canceled) {
+        await uploadAndSendImage(result.assets[0].uri);
+      }
         else Alert.alert("Permissions haven't been granted.");
     }
   }
@@ -71,7 +73,9 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     let permissions = await ImagePicker.requestCameraPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchCameraAsync();
-      if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
+      if (!result.canceled) {
+        await uploadAndSendImage(result.assets[0].uri);
+      }
       else Alert.alert("Permissions haven't been granted.");
     }
   }
@@ -93,8 +97,8 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
  }
 
     return (
-        <TouchableOpacity style={StyleSheet.container} onPress={onActionPress}>
-        <View style={[StyleSheet.wrapper, wrapperStyle]}>
+        <TouchableOpacity style={styles.container} onPress={onActionPress}>
+        <View style={[styles.wrapper, wrapperStyle]}>
             <Text style={[styles.iconText, iconTextStyle]}> +</Text>
         </View>
         </TouchableOpacity>
