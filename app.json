@@ -22,7 +22,13 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.agawi88.chatapp"
+      "package": "com.agawi88.chatapp",
+      "permissions": [
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "ACCESS_MEDIA_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
