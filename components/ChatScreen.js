@@ -100,7 +100,11 @@ const cacheMessages = async (messagesToCache) => {
   };
 // method for rendering custom actions (e.g., sending images, location)
   const renderCustomActions = (props) => {
-    return <CustomActions userID={userID} storage={storage} {...props} />;
+    return <CustomActions 
+    userID={userID} 
+    storage={storage}
+    onSend={onSend}
+     {...props} />;
   };
 
 // method for rendering custom view (e.g., map for location messages)
@@ -108,7 +112,7 @@ const renderCustomView = (props) => {
 const { currentMessage } = props;
 if (currentMessage.location) {
   return (
-    <View>
+
       <MapView
         style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
         region={{
@@ -118,27 +122,24 @@ if (currentMessage.location) {
           longitudeDelta: 0.0421,
         }}
       />
-      {currentMessage.image && <Image source={{ uri: currentMessage.image }} style={{ width: 200, height: 200 }} />}
-    </View>
+      // {currentMessage.image && <Image source={{ uri: currentMessage.image }} style={{ width: 200, height: 200 }} />}
   );
-  } else
-  return null;
+  } return null;
 }
  
   // Conditional config for KeyboardAvoidingView
-  const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0;
+  /* const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
+  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0; */
 
   return (
-    <KeyboardAvoidingView
+/*     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={keyboardBehavior}
       keyboardVerticalOffset={keyboardVerticalOffset}
-    >
+    > */
       <View
         style={[
-          styles.container,
-          { backgroundColor: backgroundColor || "white" },
+          styles.container, { backgroundColor: backgroundColor || "white" },
         ]}
       >
         <GiftedChat
@@ -150,7 +151,7 @@ if (currentMessage.location) {
           renderCustomView={renderCustomView}
           user={{
             _id: userID,
-            name: name,
+            name,
           }}
           textInputProps={{
             editable: true,
@@ -159,8 +160,8 @@ if (currentMessage.location) {
           }}
           keyboardShouldPersistTaps="handled"
         />
+        {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
       </View>
-    </KeyboardAvoidingView>
   );
 };
 

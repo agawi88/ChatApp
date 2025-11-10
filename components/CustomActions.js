@@ -1,5 +1,4 @@
 import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from 'react';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
 import * as ExpoLocation from 'expo-location';
@@ -7,7 +6,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 
-const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextStyle, userID }) => {
+const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID }) => {
 
     const actionSheet = useActionSheet();
 
@@ -30,7 +29,7 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
                 console.log('User wants to take a photo');
                 return;
               case 2:
-                await getLocation();
+                getLocation();
                 console.log('User wants to send their location');
                 default:
             }
@@ -42,6 +41,8 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
     let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchImageLibraryAsync();
+      onsole.log('Image Picker Result:', result);
+      console.log('Image URI:', result.assets?.[0]?.uri);
       if (!result.canceled) {
         await uploadAndSendImage(result.assets[0].uri);
       } 
@@ -50,17 +51,18 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
   }
 
   const takePhoto = async () => {
-
     let permissions = await ImagePicker.requestCameraPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchCameraAsync();
-      if (!result.canceled) {
-        let savePerm = await MediaLibrary.requestPermissionsAsync();
+      let savePerm = await MediaLibrary.requestPermissionsAsync();
       if (savePerm?.granted) {
           await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
       }
+      console.log('Camera Result:', result);
+      console.log('Camera URI:', result.assets?.[0]?.uri);
+      if (!result.canceled) 
         await uploadAndSendImage(result.assets[0].uri);
-      }
+
       else Alert.alert("Permissions haven't been granted.");
     }
   }
@@ -69,13 +71,20 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
     let permissions = await ExpoLocation.requestForegroundPermissionsAsync();
     if (permissions?.granted) {
       const location = await ExpoLocation.getCurrentPositionAsync({});
+            console.log('Fetched Location:', location);
       if (location) {
-        onSend({
+        onSend([
+          {
+            createdAt: new Date(),
+            user: {
+              _id: userID,
+            },
             location: {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
             },     
-        });
+        }
+      ]);
       } else Alert.alert("Error occurred while fetching location");
     } else Alert.alert("Permission to access location was denied");
  }
@@ -87,13 +96,24 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
   }
 
     const uploadAndSendImage = async (imageURI) => {
+          console.log('uploadAndSendImage called with URI:', imageURI);
+    if (!imageURI) {
+      console.error('Error: imageURI is undefined in uploadAndSendImage');
+      return;
+    }
     const uniqueRefString = generateReference(imageURI);
     const newUploadRef = ref(storage, uniqueRefString);
     const response = await fetch(imageURI);
     const blob = await response.blob();
     uploadBytes(newUploadRef, blob).then(async (snapshot) => {
       const imageURL = await getDownloadURL(snapshot.ref)
-      onSend({ image: imageURL })
+      onSend([
+        { image: imageURL,
+          createdAt: new Date(),
+          user: {
+            _id: userID
+          },
+         }]);
     });
   }
 
