@@ -105,16 +105,10 @@ const cacheMessages = async (messagesToCache) => {
 
 // method for rendering custom view (e.g., map for location messages)
 const renderCustomView = (props) => {
-  const { currentMessage } = props;
-  if (currentMessage.location) {
-    if (Platform.OS === 'web') {
-      return (
-        <Text>
-          Location: {currentMessage.location.latitude}, {currentMessage.location.longitude}
-        </Text>
-      );
-    } else {
-    return (
+const { currentMessage } = props;
+if (currentMessage.location) {
+  return (
+    <View>
       <MapView
         style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
         region={{
@@ -124,9 +118,10 @@ const renderCustomView = (props) => {
           longitudeDelta: 0.0421,
         }}
       />
-    );
-  }
-}
+      {currentMessage.image && <Image source={{ uri: currentMessage.image }} style={{ width: 200, height: 200 }} />}
+    </View>
+  );
+  } else
   return null;
 }
  

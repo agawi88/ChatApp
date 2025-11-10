@@ -11,14 +11,6 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
 
     const actionSheet = useActionSheet();
 
-
-    const generateReference = (uri) => {
-    const timeStamp = (new Date()).getTime();
-    const imageName = uri.split("/")[uri.split("/").length - 1];
-    return `${userID}-${timeStamp}-${imageName}`;
-  }
-
-
     const onActionPress = () => {
         const options = ['Choose From Library', 'Take Photo', 'Send Location', 'Cancel'];
         const cancelButtonIndex = options.length - 1; 
@@ -43,8 +35,56 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
                 default:
             }
         },
-        );
+      );
     };
+
+ const pickImage = async () => {
+    let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissions?.granted) {
+      let result = await ImagePicker.launchImageLibraryAsync();
+      if (!result.canceled) {
+        await uploadAndSendImage(result.assets[0].uri);
+      } 
+       else Alert.alert("Permissions haven't been granted.");
+    }
+  }
+
+  const takePhoto = async () => {
+
+    let permissions = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissions?.granted) {
+      let result = await ImagePicker.launchCameraAsync();
+      if (!result.canceled) {
+        let savePerm = await MediaLibrary.requestPermissionsAsync();
+      if (savePerm?.granted) {
+          await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
+      }
+        await uploadAndSendImage(result.assets[0].uri);
+      }
+      else Alert.alert("Permissions haven't been granted.");
+    }
+  }
+
+  const getLocation = async () => {
+    let permissions = await ExpoLocation.requestForegroundPermissionsAsync();
+    if (permissions?.granted) {
+      const location = await ExpoLocation.getCurrentPositionAsync({});
+      if (location) {
+        onSend({
+            location: {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+            },     
+        });
+      } else Alert.alert("Error occurred while fetching location");
+    } else Alert.alert("Permission to access location was denied");
+ }
+
+     const generateReference = (uri) => {
+    const timeStamp = (new Date()).getTime();
+    const imageName = uri.split("/")[uri.split("/").length - 1];
+    return `${userID}-${timeStamp}-${imageName}`;
+  }
 
     const uploadAndSendImage = async (imageURI) => {
     const uniqueRefString = generateReference(imageURI);
@@ -56,53 +96,6 @@ const CustomActions = ({ onSend, setLocation, storage, wrapperStyle, iconTextSty
       onSend({ image: imageURL })
     });
   }
-
- const pickImage = async () => {
-    let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissions?.granted) {
-      let result = await ImagePicker.launchImageLibraryAsync();
-      if (!result.canceled) {
-        await setImage(result.assets[0].uri);
-      } else setImage(null);
-      if (result.assets[0].uri) {
-        await uploadAndSendImage(result.assets[0].uri);
-      } 
-      //  else Alert.alert("Permissions haven't been granted.");
-    }
-  }
-
-  const takePhoto = async () => {
-
-    let permissions = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissions?.granted) {
-      let result = await ImagePicker.launchCameraAsync();
-      if (!result.canceled) {
-        let requestMediaLibraryPermissions = await MediaLibrary.requestPermissionsAsync();
-      if (requestMediaLibraryPermissions?.granted)
-          await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
-            setImage(result.assets[0]); } else setImage(null);
-      if (result.assets[0].uri) {
-        await uploadAndSendImage(result.assets[0].uri);
-      }
-      else Alert.alert("Permissions haven't been granted.");
-    }
-  }
-
-  const getLocation = async () => {
-    let permissions = await ExpoLocation.requestForegroundPermissionsAsync();
-    if (permissions?.granted) {
-      const location = await ExpoLocation.getCurrentPositionAsync({});
-      setLocation(location);
-      if (location) {
-        onSend({
-            location: {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-            },     
-        });
-      } else Alert.alert("Permission to access location was denied");
-    } else Alert.alert("Permission to access location was denied");
- }
 
     return (
         <TouchableOpacity style={styles.container} onPress={onActionPress}>
