@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -13,7 +13,7 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
   // Chat code for messages from GiftedChat
 
-  let unsubMessages;
+  //let unsubMessages;
 
   useEffect(() => {
 
@@ -21,7 +21,10 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
       title: name,
       headerStyle: { backgroundColor }
     });
+  }, [ name, backgroundColor]);
+  let unsubMessages;
 
+  useEffect(() => {
     if (isConnected === true) {
 // unregister current onSnapshot() listener to avoid registering multiple listeners when useEffect code is re-executed.
     if (unsubMessages) unsubMessages();
@@ -47,7 +50,9 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
             cacheMessages(newMessages);
             setMessages(newMessages);
         });
-      } else loadCachedMessages();
+      } else { 
+        loadCachedMessages();
+    }
 //   Clean up code
         return () => {
           if (unsubMessages) unsubMessages();
@@ -56,8 +61,8 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
 const loadCachedMessages = async () => {
   const cachedMessages = await AsyncStorage.getItem("messages") || [];
-  setMessages(cachedMessages ? JSON.parse(cachedMessages) : [] );
-  }    
+  setMessages(JSON.parse(cachedMessages));
+  };   
     
 const cacheMessages = async (messagesToCache) => {
     try {
@@ -65,7 +70,7 @@ const cacheMessages = async (messagesToCache) => {
         } catch (error) {
             console.log(error.message);
         }
-}
+};
 
   // using  addDoc() Firestore function to save the passed message to the function in the database
 /*     const onSend = (newMessages) => {
@@ -79,7 +84,7 @@ const cacheMessages = async (messagesToCache) => {
     } catch (error) {
       console.log('Error adding messages to Firestore:', error)
     }
-  }
+  };
 
   // method for conditionally rendering the input toolbar based on isConnected status
   const renderInputToolbar = (props) => {
@@ -112,7 +117,6 @@ const renderCustomView = (props) => {
 const { currentMessage } = props;
 if (currentMessage.location) {
   return (
-
       <MapView
         style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
         region={{
@@ -125,7 +129,7 @@ if (currentMessage.location) {
       // {currentMessage.image && <Image source={{ uri: currentMessage.image }} style={{ width: 200, height: 200 }} />}
   );
   } return null;
-}
+};
  
   // Conditional config for KeyboardAvoidingView
   /* const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
@@ -169,6 +173,7 @@ if (currentMessage.location) {
 const styles = StyleSheet.create({
  container: {
    flex: 1,
+  paddingBottom: Platform.OS === 'ios' ? 40 : 0
   }
 });
 

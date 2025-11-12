@@ -41,7 +41,7 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchImageLibraryAsync();
-      onsole.log('Image Picker Result:', result);
+      console.log('Image Picker Result:', result);
       console.log('Image URI:', result.assets?.[0]?.uri);
       if (!result.canceled) {
         await uploadAndSendImage(result.assets[0].uri);
@@ -54,20 +54,20 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     let permissions = await ImagePicker.requestCameraPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchCameraAsync();
-      let savePerm = await MediaLibrary.requestPermissionsAsync();
+     /*  let savePerm = await MediaLibrary.requestPermissionsAsync();
       if (savePerm?.granted) {
           await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
       }
       console.log('Camera Result:', result);
-      console.log('Camera URI:', result.assets?.[0]?.uri);
+      console.log('Camera URI:', result.assets?.[0]?.uri); */
       if (!result.canceled) 
         await uploadAndSendImage(result.assets[0].uri);
-
       else Alert.alert("Permissions haven't been granted.");
     }
   }
 
   const getLocation = async () => {
+    try {
     let permissions = await ExpoLocation.requestForegroundPermissionsAsync();
     if (permissions?.granted) {
       const location = await ExpoLocation.getCurrentPositionAsync({});
@@ -85,15 +85,23 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
             },     
         }
       ]);
-      } else Alert.alert("Error occurred while fetching location");
-    } else Alert.alert("Permission to access location was denied");
- }
+      } else {
+        Alert.alert("Error occurred while fetching location");
+    }
+  } else {
+      Alert.alert("Permission to access location was denied");
+      }
+  } catch (error) {
+      console.log('Error getting location:', error);
+      Alert.alert("Error fetching location", error.message);
+    }
+};
 
      const generateReference = (uri) => {
     const timeStamp = (new Date()).getTime();
     const imageName = uri.split("/")[uri.split("/").length - 1];
     return `${userID}-${timeStamp}-${imageName}`;
-  }
+  };
 
     const uploadAndSendImage = async (imageURI) => {
           console.log('uploadAndSendImage called with URI:', imageURI);
@@ -111,14 +119,22 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
         { image: imageURL,
           createdAt: new Date(),
           user: {
-            _id: userID
+            _id: userID,
+            name: ' ',
           },
          }]);
     });
   }
 
     return (
-        <TouchableOpacity style={styles.container} onPress={onActionPress}>
+        <TouchableOpacity 
+        style={styles.container} 
+        onPress={onActionPress}
+        accessible={true}
+        accessibilityLabel="More options"
+        accessibilityHint="Let’s you choose to send an image or your location"  
+        accessibilityRole="button"
+         >
         <View style={[styles.wrapper, wrapperStyle]}>
             <Text style={[styles.iconText, iconTextStyle]}> +</Text>
         </View>
