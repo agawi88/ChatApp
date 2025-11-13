@@ -1,8 +1,8 @@
-import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
 import * as ExpoLocation from 'expo-location';
-import * as MediaLibrary from 'expo-media-library';
+// import * as MediaLibrary from 'expo-media-library';
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   iconText: {
     color: '#b2b2b2',
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 16,
     backgroundColor: 'transparent',
     textAlign: 'center',
   },

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -22,6 +22,7 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
       headerStyle: { backgroundColor }
     });
   }, [ name, backgroundColor]);
+
   let unsubMessages;
 
   useEffect(() => {
@@ -73,8 +74,6 @@ const cacheMessages = async (messagesToCache) => {
 };
 
   // using  addDoc() Firestore function to save the passed message to the function in the database
-/*     const onSend = (newMessages) => {
-    addDoc(collection(db, "messages"), newMessages[0]) */
   
   const onSend = async (newMessages) => {
     console.log('onSend in Chat.js called with:', newMessages);
@@ -131,16 +130,8 @@ if (currentMessage.location) {
   } return null;
 };
  
-  // Conditional config for KeyboardAvoidingView
-  /* const keyboardBehavior = Platform.OS === "ios" ? "padding" : "height";
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 10 : 0; */
 
   return (
-/*     <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={keyboardBehavior}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-    > */
       <View
         style={[
           styles.container, { backgroundColor: backgroundColor || "white" },
