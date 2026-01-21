@@ -8,11 +8,51 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { signInAnonymously } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
+/**
+ * StartScreen
+ *
+ * Initial entry screen of the application.
+ * Allows the user to:
+ *  - enter a display name
+ *  - choose a preferred chat background color
+ *  - sign in anonymously via Firebase Authentication
+ *
+ * After successful sign-in, navigates to the ChatScreen
+ * and passes user preferences as route parameters.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.navigation
+ *        React Navigation navigation object.
+ *
+ * @returns {JSX.Element} Start screen UI
+ */
+
 const StartScreen = ({ navigation }) => {
 
+/**
+   * Display name entered by the user.
+   *
+   * @type {[string, Function]}
+   */  
   const [name, setName] = useState('');
+
+  /**
+   * Selected background color for the chat screen.
+   *
+   * @type {[string, Function]}
+   */  
   const [chosenColor, setChosenColor] = useState('');
+ 
   const image = require('../assets/BackgroundImage.png');
+  
+  /**
+   * Signs the user in anonymously using Firebase Authentication
+   * and navigates to the ChatScreen on success.
+   *
+   * Passes user ID, name, and chosen background color
+   * via React Navigation route params.
+   */
 
     const signInUser = () => {
         signInAnonymously(auth).then(result => {

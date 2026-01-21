@@ -2,13 +2,47 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
 import * as ExpoLocation from 'expo-location';
-// import * as MediaLibrary from 'expo-media-library';
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
+/**
+ * CustomActions component
+ *
+ * Renders a "+" button in the chat UI that opens an action sheet.
+ * Allows the user to:
+ *  - choose an image from the library
+ *  - take a photo
+ *  - share their current location
+ *
+ * Media files are uploaded to Firebase Storage and then sent as chat messages.
+ *
+ * @component
+ * @param {Object} props
+ * @param {(messages: Object[]) => void} props.onSend
+ *        Callback used to send messages to the chat.
+ * @param {import('firebase/storage').FirebaseStorage} props.storage
+ *        Initialized Firebase Storage instance.
+ * @param {Object} [props.wrapperStyle]
+ *        Optional style overrides for the icon wrapper.
+ * @param {Object} [props.iconTextStyle]
+ *        Optional style overrides for the "+" icon.
+ * @param {string} props.userID
+ *        Unique identifier of the current user.
+ *
+ * @returns {JSX.Element} Touchable action button
+ */
 
 const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID }) => {
 
     const actionSheet = useActionSheet();
+
+  /**
+   * Opens the action sheet and handles user selection.
+   *
+   * Options:
+   * 0 → Choose image from library
+   * 1 → Take a photo
+   * 2 → Send current location
+   */
 
     const onActionPress = () => {
         const options = ['Choose From Library', 'Take Photo', 'Send Location', 'Cancel'];
@@ -37,7 +71,17 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
       );
     };
 
- const pickImage = async () => {
+  /**
+   * Requests permission and allows the user to pick an image
+   * from the device's media library.
+   *
+   * If an image is selected, it is uploaded and sent as a message.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
+
+    const pickImage = async () => {
     let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissions?.granted) {
       let result = await ImagePicker.launchImageLibraryAsync();
@@ -49,6 +93,15 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
        else Alert.alert("Permissions haven't been granted.");
     }
   }
+
+  /**
+   * Requests camera permission and allows the user to take a photo.
+   *
+   * If a photo is taken, it is uploaded and sent as a message.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
 
   const takePhoto = async () => {
     let permissions = await ImagePicker.requestCameraPermissionsAsync();
@@ -65,6 +118,14 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
       else Alert.alert("Permissions haven't been granted.");
     }
   }
+
+  /**
+   * Requests foreground location permission and sends
+   * the user's current GPS coordinates as a message.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
 
   const getLocation = async () => {
     try {
@@ -97,11 +158,28 @@ const CustomActions = ({ onSend, storage, wrapperStyle, iconTextStyle, userID })
     }
 };
 
-     const generateReference = (uri) => {
+  /**
+   * Generates a unique Firebase Storage reference string
+   * based on user ID, timestamp, and original file name.
+   *
+   * @param {string} uri - Local image URI
+   * @returns {string} Unique storage reference path
+   */
+
+    const generateReference = (uri) => {
     const timeStamp = (new Date()).getTime();
     const imageName = uri.split("/")[uri.split("/").length - 1];
     return `${userID}-${timeStamp}-${imageName}`;
   };
+
+  /**
+   * Uploads an image to Firebase Storage and sends
+   * the resulting download URL as an image message.
+   *
+   * @async
+   * @param {string} imageURI - Local image URI
+   * @returns {Promise<void>}
+   */
 
     const uploadAndSendImage = async (imageURI) => {
           console.log('uploadAndSendImage called with URI:', imageURI);

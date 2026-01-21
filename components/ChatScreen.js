@@ -6,14 +6,56 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
 
+/**
+ * ChatScreen
+ *
+ * Main chat interface of the application.
+ * Handles:
+ *  - real-time messaging via Firebase Firestore
+ *  - offline message caching via AsyncStorage
+ *  - media and location messages
+ *  - conditional UI rendering based on connectivity
+ *
+ * @component
+ * @param {Object} props
+ * @param {import('firebase/firestore').Firestore} props.db
+ *        Initialized Firestore database instance.
+ * @param {boolean} props.isConnected
+ *        Network connectivity status.
+ * @param {Object} props.route
+ *        React Navigation route object.
+ * @param {Object} props.route.params
+ * @param {string} props.route.params.userID
+ *        Unique identifier of the current user.
+ * @param {string} props.route.params.name
+ *        Display name of the user.
+ * @param {string} props.route.params.backgroundColor
+ *        Preferred background color for the chat screen.
+ * @param {import('firebase/storage').FirebaseStorage} props.storage
+ *        Firebase Storage instance used for media uploads.
+ * @param {Object} props.navigation
+ *        React Navigation navigation object.
+ *
+ * @returns {JSX.Element} Chat screen UI
+ */
+
 const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
   const { userID, name, backgroundColor } = route.params;
+
+  /**
+   * State holding all chat messages displayed in GiftedChat.
+   *
+   * @type {[Object[], Function]}
+   */
+
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
 
   // Chat code for messages from GiftedChat
 
-  //let unsubMessages;
+  /**
+   * Update navigation header when user name or background color changes.
+   */
 
   useEffect(() => {
 
@@ -24,6 +66,10 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
   }, [ name, backgroundColor]);
 
   let unsubMessages;
+
+  /**
+   * Update navigation header when user name or background color changes.
+   */
 
   useEffect(() => {
     if (isConnected === true) {
@@ -60,11 +106,26 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
         }
   }, [ isConnected ]); //safer option so if changes occur they will re-run
 
+  /**
+   * Loads cached messages from AsyncStorage when offline.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
+
 const loadCachedMessages = async () => {
   const cachedMessages = await AsyncStorage.getItem("messages") || [];
   setMessages(JSON.parse(cachedMessages));
   };   
-    
+
+  /**
+   * Stores messages in AsyncStorage for offline use.
+   *
+   * @async
+   * @param {Object[]} messagesToCache
+   * @returns {Promise<void>}
+   */  
+
 const cacheMessages = async (messagesToCache) => {
     try {
           await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
@@ -73,8 +134,15 @@ const cacheMessages = async (messagesToCache) => {
         }
 };
 
-  // using  addDoc() Firestore function to save the passed message to the function in the database
-  
+  /**
+   * Sends a new message to Firestore.
+   * Called by GiftedChat and CustomActions.
+   *
+   * @async
+   * @param {Object[]} newMessages - Array containing the new message
+   * @returns {Promise<void>}
+   */
+
   const onSend = async (newMessages) => {
     console.log('onSend in Chat.js called with:', newMessages);
     try {
@@ -85,14 +153,27 @@ const cacheMessages = async (messagesToCache) => {
     }
   };
 
-  // method for conditionally rendering the input toolbar based on isConnected status
+  /**
+   * Conditionally renders the input toolbar
+   * depending on network connectivity.
+   *
+   * @param {Object} props - GiftedChat toolbar props
+   * @returns {JSX.Element|null}
+   */
+  
   const renderInputToolbar = (props) => {
     if (isConnected === true)
     return <InputToolbar {...props} />;
     else return null; 
 }
 
-// method for adjusting colors of gifted chat's message bubbles
+  /**
+   * Customizes the appearance of chat bubbles.
+   *
+   * @param {Object} props - GiftedChat bubble props
+   * @returns {JSX.Element}
+   */
+  
   const renderBubble = (props) => {
     return <Bubble
       {...props}
@@ -102,7 +183,13 @@ const cacheMessages = async (messagesToCache) => {
       }}
     />
   };
-// method for rendering custom actions (e.g., sending images, location)
+  /**
+   * Renders custom action buttons (image, camera, location).
+   *
+   * @param {Object} props - GiftedChat action props
+   * @returns {JSX.Element}
+   */
+  
   const renderCustomActions = (props) => {
     return <CustomActions 
     userID={userID} 
@@ -111,7 +198,14 @@ const cacheMessages = async (messagesToCache) => {
      {...props} />;
   };
 
-// method for rendering custom view (e.g., map for location messages)
+/**
+   * Renders custom message views.
+   * Displays a map preview for location messages.
+   *
+   * @param {Object} props - GiftedChat custom view props
+   * @returns {JSX.Element|null}
+   */
+  
 const renderCustomView = (props) => {
 const { currentMessage } = props;
 if (currentMessage.location) {
