@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["components", "firebaseConfig.js", "App.js"],
+    "includePattern": ".js$",
+    "excludePattern": "(node_modules|android|ios)"
+  },
+  "opts": {
+    "destination": "docs",
+    "recurse": true
+  }
+}
