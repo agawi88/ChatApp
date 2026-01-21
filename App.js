@@ -43,7 +43,6 @@ const App = () => {
   /**
    * Network connection status provided by NetInfo.
    *
-   * @type {Object}
    */
 
 const connectionStatus = useNetInfo();

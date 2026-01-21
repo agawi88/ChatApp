@@ -17,10 +17,10 @@ import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
  *
  * @component
  * @param {Object} props
- * @param {(messages: Object[]) => void} props.onSend
+@param {Function} props.onSend
  *        Callback used to send messages to the chat.
- * @param {import('firebase/storage').FirebaseStorage} props.storage
- *        Initialized Firebase Storage instance.
+@param {Object} props.storage
+ *        Firebase Storage instance.
  * @param {Object} [props.wrapperStyle]
  *        Optional style overrides for the icon wrapper.
  * @param {Object} [props.iconTextStyle]

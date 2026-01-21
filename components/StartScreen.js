@@ -32,15 +32,11 @@ const StartScreen = ({ navigation }) => {
 
 /**
    * Display name entered by the user.
-   *
-   * @type {[string, Function]}
    */  
   const [name, setName] = useState('');
 
   /**
    * Selected background color for the chat screen.
-   *
-   * @type {[string, Function]}
    */  
   const [chosenColor, setChosenColor] = useState('');
  

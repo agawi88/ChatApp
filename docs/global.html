@@ -142,7 +142,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line52">line 52</a>
+        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -204,7 +204,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line96">line 96</a>
+        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -266,7 +266,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line74">line 74</a>
+        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -390,7 +390,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line83">line 83</a>
+        <a href="firebaseConfig.js.html">firebaseConfig.js</a>, <a href="firebaseConfig.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -600,17 +600,41 @@ Acts as the central integration point for:
 
             
 
-            <td class="description last"></td>
-        </tr>
+            <td class="description last">
+                <h6>Properties</h6>
+                
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code></code></td>
+                <td class="name"><code>db</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
             
             </td>
 
@@ -618,14 +642,14 @@ Acts as the central integration point for:
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Firestore database instance.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>props.isConnected</code></td>
+                <td class="name"><code>isConnected</code></td>
             
 
             <td class="type">
@@ -648,7 +672,7 @@ Acts as the central integration point for:
 
         <tr>
             
-                <td class="name"><code>props.route</code></td>
+                <td class="name"><code>route</code></td>
             
 
             <td class="type">
@@ -815,10 +839,15 @@ Acts as the central integration point for:
 
         <tr>
             
-                <td class="name"><code></code></td>
+                <td class="name"><code>storage</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
             
             </td>
 
@@ -826,14 +855,14 @@ Acts as the central integration point for:
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Firebase Storage instance used for media uploads.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>props.navigation</code></td>
+                <td class="name"><code>navigation</code></td>
             
 
             <td class="type">
@@ -850,6 +879,13 @@ Acts as the central integration point for:
             
 
             <td class="description last">React Navigation navigation object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -988,8 +1024,6 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -1015,28 +1049,46 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"></td>
-        </tr>
+            <td class="description last">
+                <h6>Properties</h6>
+                
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code></code></td>
+                <td class="name"><code>onSend</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
             
             </td>
 
@@ -1052,17 +1104,22 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Callback used to send messages to the chat.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code></code></td>
+                <td class="name"><code>storage</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
             
             </td>
 
@@ -1078,14 +1135,14 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Firebase Storage instance.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>props.wrapperStyle</code></td>
+                <td class="name"><code>wrapperStyle</code></td>
             
 
             <td class="type">
@@ -1118,7 +1175,7 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
 
         <tr>
             
-                <td class="name"><code>props.iconTextStyle</code></td>
+                <td class="name"><code>iconTextStyle</code></td>
             
 
             <td class="type">
@@ -1151,7 +1208,7 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
 
         <tr>
             
-                <td class="name"><code>props.userID</code></td>
+                <td class="name"><code>userID</code></td>
             
 
             <td class="type">
@@ -1176,6 +1233,13 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
             
 
             <td class="description last">Unique identifier of the current user.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -1498,7 +1562,7 @@ Media files are uploaded to Firebase Storage and then sent as chat messages.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Jan 22 2026 00:27:26 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Jan 22 2026 00:50:01 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -18,8 +18,8 @@ import MapView from 'react-native-maps';
  *
  * @component
  * @param {Object} props
- * @param {import('firebase/firestore').Firestore} props.db
- *        Initialized Firestore database instance.
+@param {Object} props.db
+ *        Firestore database instance.
  * @param {boolean} props.isConnected
  *        Network connectivity status.
  * @param {Object} props.route
@@ -31,7 +31,7 @@ import MapView from 'react-native-maps';
  *        Display name of the user.
  * @param {string} props.route.params.backgroundColor
  *        Preferred background color for the chat screen.
- * @param {import('firebase/storage').FirebaseStorage} props.storage
+@param {Object} props.storage
  *        Firebase Storage instance used for media uploads.
  * @param {Object} props.navigation
  *        React Navigation navigation object.
@@ -45,8 +45,6 @@ const ChatScreen = ({ db, isConnected, route, storage, navigation }) => {
 
   /**
    * State holding all chat messages displayed in GiftedChat.
-   *
-   * @type {[Object[], Function]}
    */
 
   const [messages, setMessages] = useState([]); // because the chat needs to send, receive and display messages, so their state will be changing
